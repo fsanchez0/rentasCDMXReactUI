@@ -7,7 +7,12 @@ import Loadable from '../ui-component/Loadable';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default')));
 
+// inmuebles routing
+const InmueblesDisponibles = Loadable(lazy(() => import('../views/inmuebles/inmuebles-disponibles')));
+
 // catalogos routing
+const Inmuebles     = Loadable(lazy(() => import('../views/inmuebles/inmuebles')));
+const TiposInmueble = Loadable(lazy(() => import('../views/inmuebles/tipo-de-inmueble')));
 const Asesores      = Loadable(lazy( () => import ('../views/asesores')));
 const Apoderados    = Loadable(lazy( () => import ('../views/apoderados')));
 const Duenios       = Loadable(lazy( () => import ('../views/duenios')));
@@ -39,26 +44,33 @@ const MainRoutes = {
             path: 'catalogos',
             children: [
                 {
+                    path: 'inmuebles',
+                    element: <Inmuebles />
+                },
+                {
                     path: 'asesores',
                     element: <Asesores />
-                }
-            ]
-        },
-        {
-            path: 'catalogos',
-            children: [
+                },
                 {
                     path: 'duenios',
                     element: <Duenios />
+                },
+                {
+                    path: 'apoderados',
+                    element: <Apoderados />
+                },
+                {
+                    path: 'tiposInmueble',
+                    element: <TiposInmueble/>
                 }
             ]
         },
         {
-            path: 'catalogos',
+            path: 'inmuebles',
             children: [
                 {
-                    path: 'apoderados',
-                    element: <Apoderados />
+                    path: 'inmueblesDisponibles',
+                    element: <InmueblesDisponibles />
                 }
             ]
         },

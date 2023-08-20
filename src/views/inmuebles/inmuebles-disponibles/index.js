@@ -1,41 +1,42 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {
     Box,
-    Button,
     IconButton,
     Tooltip
 } from "@mui/material";
 import MaterialReactTable from 'material-react-table';
-import { Add, Delete, Edit } from '@mui/icons-material';
+import { Visibility } from '@mui/icons-material';
 
 // components
-import MainCard from "../../ui-component/cards/MainCard";
-import {CreateNewAsesorModal} from "./create";
+import MainCard from "../../../ui-component/cards/MainCard";
 
 // config
-import config from "../../config";
-import {EditAsesorModal} from "./edit";
-import {DeleteAsesorModal} from "./delete";
+import config from "../../../config";
+import {EditInmuebleDisponibleModal} from "./edit";
 
-export default function Asesores() {
+export default function InmueblesDisponibles() {
 
-    const [asesores, setAsesores] = useState(() => []);
+    const [inmuebles, setInmuebles] = useState(() => []);
     const [isLoading, setIsLoading] = useState(false);
 
-    const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     let initialValues = {
         'id': "",
-        'nombre': "",
-        'apellido': "",
-        'correo': "",
-        'extension': "",
-        'categorias': []
+        'calle': "",
+        'numExterior': "",
+        'numInterior': "",
+        'colonia': "",
+        'delegacion': "",
+        'descripcion': "",
+        'notas': "",
+        'inventario': "",
+        'estacionamiento': "",
+        'telefono': ""
     };
 
-    const [asesorToEdit, setAsesorToEdit] = useState(initialValues);
+    const [inmuebleToEdit, setInmuebleToEdit] = useState(initialValues);
     const [rowIndex, setRowIndex] = useState(0);
     const [currentRow, setCurrentRow] = useState(null);
 
@@ -55,46 +56,45 @@ export default function Asesores() {
             size: 30,
         },
         {
-            accessorKey: "nombre",
-            header: "Nombre",
+            accessorKey: "calle",
+            header: "Calle",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "apellido",
-            header: "Apellido",
+            accessorKey: "numExterior",
+            header: "Num. Ext.",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "correo",
-            header: "Correo",
+            accessorKey: "numInterior",
+            header: "Num. Int.",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "extension",
-            header: "Extensión",
+            accessorKey: "colonia",
+            header: "Colonia",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "categorias",
-            header: "Categorías",
+            accessorKey: "delegacion",
+            header: "Alcaldía",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
-            Cell: ({cell}) => cell.getValue().length>0?(cell.getValue().length>1?(cell.getValue().map(value => (value.id>1?", ":"") + value.categoria)):cell.getValue()[0].categoria):"Sin Categoría",
         }
+
     ], []);
 
     const handleCreateNewRow = (values) => {
         setIsLoading(true);
-        delete values.categorias;
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -103,9 +103,9 @@ export default function Asesores() {
         fetch(baseResource + '/asesores/create', requestOptions)
             .then(response => response.json())
             .then(data => {
-                asesores.push(data);
+                inmuebles.push(data);
                 setIsLoading(false);
-                setAsesores([...asesores]);
+                setInmuebles([...inmuebles]);
             });
     };
 
@@ -113,11 +113,11 @@ export default function Asesores() {
     {
         setIsLoading(true);
         // get the data from backend
-        fetch(baseResource + '/asesores/get/' + row.getValue('id'))
+        fetch(baseResource + '/inmuebles/get/' + row.getValue('id'))
             .then(response => response.json())
             .then(data => {
                 initialValues = data; //todo: maybe we don't need two variables here
-                setAsesorToEdit(initialValues);
+                setInmuebleToEdit(initialValues);
                 setRowIndex(row.index); // to get the position of the array to replace later
             }).finally(() => {
             // open dialog
@@ -136,9 +136,9 @@ export default function Asesores() {
         fetch(baseResource + '/asesores/edit', requestOptions)
             .then(response => response.json())
             .then(data => {
-                asesores[rowIndex] = data;
+                inmuebles[rowIndex] = data;
                 setIsLoading(false);
-                setAsesores([...asesores]);
+                setInmuebles([...inmuebles]);
             }).finally(() => {
             setEditModalOpen(false);
         });
@@ -161,8 +161,8 @@ export default function Asesores() {
         fetch(baseResource + '/asesores/delete/' + id, requestOptions)
         .then(function (response){
             if(response.ok){
-                asesores.splice(rowIndex, 1);
-                setAsesores([...asesores]);
+                inmuebles.splice(rowIndex, 1);
+                setInmuebles([...inmuebles]);
             }
             setIsLoading(false);
         }).finally(() => {
@@ -181,9 +181,9 @@ export default function Asesores() {
             fetch(baseResource + '/asesores/edit', requestOptions)
                 .then(response => response.json())
                 .then(data => {
-                    asesores[row.index] = data;
+                    inmuebles[row.index] = data;
                     setIsLoading(false);
-                    setAsesores([...asesores]);
+                    setInmuebles([...inmuebles]);
                 });
             exitEditingMode(); //required to exit editing mode and close modal
         }
@@ -203,26 +203,26 @@ export default function Asesores() {
 
             }
         },
-        [asesores],
+        [inmuebles],
     );
 
     useEffect(() => {
         setIsLoading(true);
 
-        fetch(baseResource + '/asesores/all')
+        fetch(baseResource + '/inmuebles/disponibles/all')
             .then(response => response.json())
             .then(data => {
-                setAsesores([...data]);
+                setInmuebles([...data]);
                 setIsLoading(false);
             })
     }, []);
 
     return (
         <>
-          <MainCard title="Asesores">
+          <MainCard title="Inmuebles Disponibles">
               <MaterialReactTable
                   columns={columns}
-                  data={asesores}
+                  data={inmuebles}
                   editingMode={"modal"} //default
                   enableColumnOrdering
                   enableEditing={true}
@@ -231,7 +231,7 @@ export default function Asesores() {
                   displayColumnDefOptions={{
                       'mrt-row-actions': {
                           header: 'Acciones', //change header text
-                          size: 120,
+                          size: 60,
                           muiTableHeadCellProps: {
                               align: 'center',
                           },
@@ -239,52 +239,23 @@ export default function Asesores() {
                   }}
                   renderRowActions={({ row, table }) => (
                       <Box sx={{ display: 'flex', gap: '1rem' }}>
-                          <Tooltip arrow placement="left" title="Editar">
+                          <Tooltip arrow placement="left" title="Ver">
                               <IconButton color="primary" onClick={() => handleEditRowDialog(row)}>
-                                  <Edit />
-                              </IconButton>
-                          </Tooltip>
-                          <Tooltip arrow placement="right" title="Eliminar">
-                              <IconButton color="error" onClick={() => handleDeleteRowDialog(row)}>
-                                  <Delete />
+                                  <Visibility />
                               </IconButton>
                           </Tooltip>
                       </Box>
                   )}
                   positionActionsColumn="last"
-                  renderTopToolbarCustomActions={() => (
-                      <Button
-                          color="primary"
-                          onClick={() => setCreateModalOpen(true)}
-                          variant="contained"
-                          startIcon={<Add/>}
-                      >
-                          Nuevo Asesor
-                      </Button>
-                  )}
               />
               {editModalOpen ?
-                  <EditAsesorModal
-                      rowData={asesorToEdit}
+                  <EditInmuebleDisponibleModal
+                      rowData={inmuebleToEdit}
                       open={editModalOpen}
                       onClose={() => setEditModalOpen(false)}
                       onSubmit={handleSaveChanges}
                   /> : <></>
               }
-              {deleteModalOpen ?
-                  <DeleteAsesorModal
-                      rowData={currentRow}
-                      open={deleteModalOpen}
-                      onClose={() => setDeleteModalOpen(false)}
-                      onSubmit={handleDeleteRow}
-                  /> : <></>
-              }
-              <CreateNewAsesorModal
-                  columns={columns}
-                  open={createModalOpen}
-                  onClose={() => setCreateModalOpen(false)}
-                  onSubmit={handleCreateNewRow}
-              />
           </MainCard>
         </>
     );

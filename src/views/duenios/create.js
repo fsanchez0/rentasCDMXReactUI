@@ -14,17 +14,16 @@ import {
     Select,
     MenuItem,
     InputAdornment,
-    OutlinedInput,
     IconButton,
     Divider,
     Chip,
-    Tooltip, Checkbox, FormControlLabel, Alert, AlertTitle
+    Tooltip, Checkbox, FormControlLabel
 } from "@mui/material";
 
 import {useFormik} from "formik";
 
 import config from "../../config";
-import {Add, Block, CheckCircle, Delete, Edit, Visibility, VisibilityOff} from "@mui/icons-material";
+import {Delete} from "@mui/icons-material";
 import MaterialReactTable from "material-react-table";
 
 export const CreateNewDuenioModal = ({ open, rowData, onClose, onSubmit}) => {
@@ -260,12 +259,14 @@ export const CreateNewDuenioModal = ({ open, rowData, onClose, onSubmit}) => {
     }
 
     const handleDeleteTelefono = (item) => {
+        // todo: pop deletes last element!
         listaTelefonos.pop(item);
         console.log(listaTelefonos);
         setNotas('borrado');
     }
 
     const handleDeleteCorreo = (item) => {
+        // todo: pop deletes last element!
         listaCorreos.pop(item);
         console.log(listaCorreos);
         setNotasCorreo('borrado');

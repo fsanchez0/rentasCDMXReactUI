@@ -218,7 +218,7 @@ export default function Duenios() {
     const handleChangeStatusRow = useCallback(
         (row, status) => {
             if (
-                !window.confirm(`Seguro que deseas ${status?'ACTIVAR':'DESACTIVAR'} al Dueño ${row.getValue('nombre')} ?`)
+                !window.confirm(`Seguro que deseas ${status?'ACTIVAR':'DESACTIVAR'} al Dueño ${row.original.nombre} ?`)
             ) {
                 return;
             }else {

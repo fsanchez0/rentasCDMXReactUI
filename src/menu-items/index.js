@@ -1,6 +1,7 @@
 import dashboard from './dashboard';
-import pages from './pages';
-import utilities from './utilities';
+import inmuebles from "./inmuebles";
+import catalogos from './catalogos';
+//import utilities from './utilities';
 import administracion from "./administracion";
 import other from './other';
 
@@ -8,7 +9,7 @@ import other from './other';
 
 const menuItems = {
     //items: [dashboard, pages, utilities, other]
-    items: [dashboard, pages, administracion, other]
+    items: [dashboard, inmuebles, catalogos, administracion, other]
 };
 
 export default menuItems;

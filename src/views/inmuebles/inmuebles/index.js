@@ -1,49 +1,70 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {
     Box,
     Button,
     IconButton,
     Tooltip
 } from "@mui/material";
+// MUI TABLE
 import MaterialReactTable from 'material-react-table';
-import { Add, Delete, Edit } from '@mui/icons-material';
+// ICONS
+import { Add, Delete, Edit, Visibility } from '@mui/icons-material';
+// MUI COMPONENTS
+import MainCard from "../../../ui-component/cards/MainCard";
+// CONFIGURATION
+import config from "../../../config";
+// DIALOGS
+import {CreateEditViewModal} from "./createEditView";
+import {DeleteModal} from "../../common/delete";
+// STYLES
+import {blueGrey} from "@mui/material/colors";
 
-// components
-import MainCard from "../../ui-component/cards/MainCard";
-import {CreateNewAsesorModal} from "./create";
+export default function Inmuebles() {
 
-// config
-import config from "../../config";
-import {EditAsesorModal} from "./edit";
-import {DeleteAsesorModal} from "./delete";
-
-export default function Asesores() {
-
-    const [asesores, setAsesores] = useState(() => []);
+    // CONFIGURATION
+    const baseResource = config.baseResource;
+    // TABLE DATA
+    const [inmuebles, setInmuebles] = useState(() => []);
+    // LOADING VAR --- NOT WORKING YET
     const [isLoading, setIsLoading] = useState(false);
-
+    // DIALOG CONTROL VARIABLES
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [viewModalOpen, setViewModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    // ERRORS VALIDATION
+    const [validationErrors, setValidationErrors] = useState({});
 
+    // INITIAL VALUES FOR DIALOGS, THEY FILL ON DIALOG OPEN
     let initialValues = {
         'id': "",
-        'nombre': "",
-        'apellido': "",
-        'correo': "",
-        'extension': "",
-        'categorias': []
+        'calle': "",
+        'numExterior': "",
+        'numInterior': "",
+        'colonia': "",
+        'delegacion': "",
+        'descripcion': "",
+        'notas': "",
+        'inventario': "",
+        'estacionamiento': "",
+        'telefono': "",
+        "idTipoInmueble": "",
+        "idAsesor": "",
+        "idPais": 110,
+        "idEstado": 9,
+        "codigoPostal": "",
+        "tamanio": "",
+        "predial": "",
+        "duenios": [],
+        "cuentasAsociadas": []
     };
 
-    const [asesorToEdit, setAsesorToEdit] = useState(initialValues);
+    // DIALOG DATA VARIABLES
+    const [inmuebleToEdit, setInmuebleToEdit] = useState(initialValues);
     const [rowIndex, setRowIndex] = useState(0);
     const [currentRow, setCurrentRow] = useState(null);
 
-    const [validationErrors, setValidationErrors] = useState({});
-
-    const baseResource = config.baseResource;
-
-    // Columnas
+    // TABLE COLUMNS
     const columns = useMemo(
 () => [
         {
@@ -55,76 +76,81 @@ export default function Asesores() {
             size: 30,
         },
         {
-            accessorKey: "nombre",
-            header: "Nombre",
+            accessorKey: "calle",
+            header: "Calle",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "apellido",
-            header: "Apellido",
+            accessorKey: "numExterior",
+            header: "Num. Ext.",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "correo",
-            header: "Correo",
+            accessorKey: "numInterior",
+            header: "Num. Int.",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "extension",
-            header: "Extensión",
+            accessorKey: "colonia",
+            header: "Colonia",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
         },
         {
-            accessorKey: "categorias",
-            header: "Categorías",
+            accessorKey: "delegacion",
+            header: "Alcaldía",
             enableColumnOrdering: false,
             enableEditing: true, //disable editing on this column
             enableSorting: true,
-            Cell: ({cell}) => cell.getValue().length>0?(cell.getValue().length>1?(cell.getValue().map(value => (value.id>1?", ":"") + value.categoria)):cell.getValue()[0].categoria):"Sin Categoría",
         }
+
     ], []);
 
+    /** CREATE **/
     const handleCreateNewRow = (values) => {
         setIsLoading(true);
-        delete values.categorias;
+        console.log(values);
+        console.log(JSON.stringify(values));
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(values)
         };
-        fetch(baseResource + '/asesores/create', requestOptions)
+        fetch(baseResource + '/inmuebles/create', requestOptions)
             .then(response => response.json())
             .then(data => {
-                asesores.push(data);
+                inmuebles.push(data);
                 setIsLoading(false);
-                setAsesores([...asesores]);
+                setInmuebles([...inmuebles]);
+                setCreateModalOpen(false);
             });
     };
 
-    const handleEditRowDialog = (row) =>
+    /** GET BY ID **/
+    const handleViewEditRowDialog = (row, isEditEnabled) =>
     {
         setIsLoading(true);
         // get the data from backend
-        fetch(baseResource + '/asesores/get/' + row.getValue('id'))
+        fetch(baseResource + '/inmuebles/get/' + row.getValue('id'))
             .then(response => response.json())
             .then(data => {
                 initialValues = data; //todo: maybe we don't need two variables here
-                setAsesorToEdit(initialValues);
+                setInmuebleToEdit(initialValues);
                 setRowIndex(row.index); // to get the position of the array to replace later
             }).finally(() => {
             // open dialog
-            setEditModalOpen(true);
+            isEditEnabled?setEditModalOpen(true):setViewModalOpen(true);
         });
     }
 
+    /** EDIT **/
     const handleSaveChanges = (data) =>
     {
         setIsLoading(true);
@@ -133,17 +159,23 @@ export default function Asesores() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         };
-        fetch(baseResource + '/asesores/edit', requestOptions)
+        fetch(baseResource + '/inmuebles/edit', requestOptions)
             .then(response => response.json())
             .then(data => {
-                asesores[rowIndex] = data;
+                inmuebles[rowIndex] = data;
                 setIsLoading(false);
-                setAsesores([...asesores]);
+                setInmuebles([...inmuebles]);
             }).finally(() => {
             setEditModalOpen(false);
         });
     }
 
+    const handleCancelRowEdits = () => {
+        setValidationErrors({});
+    };
+
+    /** DELETE **/
+    // HANDLE DIALOG
     const handleDeleteRowDialog = (row) =>
     {
         setIsLoading(true);
@@ -151,18 +183,17 @@ export default function Asesores() {
         setRowIndex(row.index);
         setDeleteModalOpen(true);
     }
-
+    // HANDLE REQUEST
     const handleDeleteRow = (id) =>
     {
-        setIsLoading(true);
         const requestOptions = {
             method: 'DELETE',
         };
-        fetch(baseResource + '/asesores/delete/' + id, requestOptions)
+        fetch(baseResource + '/inmuebles/delete/' + id, requestOptions)
         .then(function (response){
             if(response.ok){
-                asesores.splice(rowIndex, 1);
-                setAsesores([...asesores]);
+                inmuebles.splice(rowIndex, 1);
+                setInmuebles([...inmuebles]);
             }
             setIsLoading(false);
         }).finally(() => {
@@ -170,68 +201,31 @@ export default function Asesores() {
         } );
     }
 
-    const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
-        if (!Object.keys(validationErrors).length) {
-            setIsLoading(true);
-            const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(values)
-            };
-            fetch(baseResource + '/asesores/edit', requestOptions)
-                .then(response => response.json())
-                .then(data => {
-                    asesores[row.index] = data;
-                    setIsLoading(false);
-                    setAsesores([...asesores]);
-                });
-            exitEditingMode(); //required to exit editing mode and close modal
-        }
-    };
-
-    const handleCancelRowEdits = () => {
-        setValidationErrors({});
-    };
-
-    const handleDeleteRowOld = useCallback(
-        (row) => {
-            if (
-                !window.confirm(`Seguro que deseas borrar al asesor ${row.getValue('nombre')} ?`)
-            ) {
-                return;
-            }else {
-
-            }
-        },
-        [asesores],
-    );
-
     useEffect(() => {
         setIsLoading(true);
 
-        fetch(baseResource + '/asesores/all')
+        fetch(baseResource + '/inmuebles/all')
             .then(response => response.json())
             .then(data => {
-                setAsesores([...data]);
+                setInmuebles([...data]);
                 setIsLoading(false);
             })
     }, []);
 
     return (
         <>
-          <MainCard title="Asesores">
+          <MainCard title="Inmuebles">
               <MaterialReactTable
                   columns={columns}
-                  data={asesores}
+                  data={inmuebles}
                   editingMode={"modal"} //default
                   enableColumnOrdering
                   enableEditing={true}
-                  onEditingRowSave={handleSaveRowEdits}
                   onEditingRowCancel={handleCancelRowEdits}
                   displayColumnDefOptions={{
                       'mrt-row-actions': {
                           header: 'Acciones', //change header text
-                          size: 120,
+                          size: 60,
                           muiTableHeadCellProps: {
                               align: 'center',
                           },
@@ -239,14 +233,19 @@ export default function Asesores() {
                   }}
                   renderRowActions={({ row, table }) => (
                       <Box sx={{ display: 'flex', gap: '1rem' }}>
-                          <Tooltip arrow placement="left" title="Editar">
-                              <IconButton color="primary" onClick={() => handleEditRowDialog(row)}>
-                                  <Edit />
+                          <Tooltip arrow placement="left" title="Ver">
+                              <IconButton sx={{color: blueGrey[500]}} onClick={() => handleViewEditRowDialog(row,0)}>
+                                  <Visibility />
                               </IconButton>
                           </Tooltip>
                           <Tooltip arrow placement="right" title="Eliminar">
                               <IconButton color="error" onClick={() => handleDeleteRowDialog(row)}>
                                   <Delete />
+                              </IconButton>
+                          </Tooltip>
+                          <Tooltip arrow placement="right" title="Editar">
+                              <IconButton color="primary" onClick={() => handleViewEditRowDialog(row,1)}>
+                                  <Edit />
                               </IconButton>
                           </Tooltip>
                       </Box>
@@ -259,32 +258,47 @@ export default function Asesores() {
                           variant="contained"
                           startIcon={<Add/>}
                       >
-                          Nuevo Asesor
+                          Nuevo Inmueble
                       </Button>
                   )}
               />
+              {createModalOpen?
+                  <CreateEditViewModal
+                      mode="create"
+                      rowData={initialValues}
+                      open={createModalOpen}
+                      onClose={() => setCreateModalOpen(false)}
+                      onSubmit={handleCreateNewRow}
+                  /> : <></>
+              }
               {editModalOpen ?
-                  <EditAsesorModal
-                      rowData={asesorToEdit}
+                  <CreateEditViewModal
+                      mode="edit"
+                      rowData={inmuebleToEdit}
                       open={editModalOpen}
                       onClose={() => setEditModalOpen(false)}
                       onSubmit={handleSaveChanges}
                   /> : <></>
               }
-              {deleteModalOpen ?
-                  <DeleteAsesorModal
-                      rowData={currentRow}
+              {viewModalOpen ?
+                  <CreateEditViewModal
+                      mode="view"
+                      rowData={inmuebleToEdit}
+                      open={viewModalOpen}
+                      onClose={() => setViewModalOpen(false)}
+                      onSubmit={handleSaveChanges}
+                  /> : <></>
+              }
+              {deleteModalOpen?
+                  <DeleteModal
+                      className="el Inmueble"
+                      objectName={currentRow.getValue('calle') + ' ' + currentRow.getValue('numExterior')}
+                      rowId={currentRow.getValue('id')}
                       open={deleteModalOpen}
                       onClose={() => setDeleteModalOpen(false)}
                       onSubmit={handleDeleteRow}
-                  /> : <></>
+                      />:<></>
               }
-              <CreateNewAsesorModal
-                  columns={columns}
-                  open={createModalOpen}
-                  onClose={() => setCreateModalOpen(false)}
-                  onSubmit={handleCreateNewRow}
-              />
           </MainCard>
         </>
     );

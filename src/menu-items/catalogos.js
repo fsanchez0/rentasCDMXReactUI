@@ -1,15 +1,15 @@
 // assets
-import { LibraryBooks, Groups, Groups3, Gavel } from "@mui/icons-material";
+import { LibraryBooks, Groups, Groups3, Gavel, HomeWork, HolidayVillage } from "@mui/icons-material";
 
 // constant
 const icons = {
-    LibraryBooks, Groups, Groups3, Gavel
+    LibraryBooks, Groups, Groups3, Gavel, HomeWork, HolidayVillage
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
-const pages = {
-    id: 'pages',
+const catalogos = {
+    id: 'catalogos',
     type: 'group',
     children: [
         {
@@ -19,6 +19,22 @@ const pages = {
             icon: icons.LibraryBooks,
 
             children: [
+                {
+                    id: 'inmuebles',
+                    title: 'Inmuebles',
+                    type: 'item',
+                    icon: icons.HomeWork,
+                    url: '/catalogos/inmuebles',
+                    target: false
+                },
+                {
+                    id: 'tiposInmueble',
+                    title: 'Tipos de Inmueble',
+                    type: 'item',
+                    icon: icons.HolidayVillage,
+                    url: '/catalogos/tiposInmueble',
+                    target: false
+                },
                 {
                     id: 'login3',
                     title: 'Asesores',
@@ -48,4 +64,4 @@ const pages = {
     ]
 };
 
-export default pages;
+export default catalogos;
