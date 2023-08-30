@@ -101,7 +101,7 @@ export const CreateEditViewModal = ({ open, mode, rowData, onClose, onSubmit }) 
     // not sure if we can create inmuebles outside mexico
     /*
     useEffect(() => {
-        fetch(baseResource + 'region/paises')
+        fetch(baseResource + '/region/paises')
             .then(response => response.json())
             .then(data => {
                 setListaPaises([...data]);

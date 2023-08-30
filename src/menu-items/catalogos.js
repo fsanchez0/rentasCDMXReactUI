@@ -1,9 +1,16 @@
 // assets
-import { LibraryBooks, Groups, Groups3, Gavel, HomeWork, HolidayVillage } from "@mui/icons-material";
+import {
+    LibraryBooks,
+    Groups, Groups3,
+    Gavel, HomeWork,
+    HolidayVillage,
+    Hail } from "@mui/icons-material";
 
 // constant
 const icons = {
-    LibraryBooks, Groups, Groups3, Gavel, HomeWork, HolidayVillage
+    LibraryBooks, Groups,
+    Groups3, Gavel, HomeWork,
+    HolidayVillage, Hail
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -25,6 +32,14 @@ const catalogos = {
                     type: 'item',
                     icon: icons.HomeWork,
                     url: '/catalogos/inmuebles',
+                    target: false
+                },
+                {
+                    id: 'inquilinos',
+                    title: 'Inquilinos',
+                    type: 'item',
+                    icon: icons.Hail,
+                    url: '/catalogos/inquilinos',
                     target: false
                 },
                 {

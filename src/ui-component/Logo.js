@@ -1,6 +1,7 @@
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {Typography} from "@mui/material";
+import config from '../config';
 
 /**
  * if you want to use image instead of <svg> uncomment following.
@@ -14,6 +15,7 @@ import {Typography} from "@mui/material";
 
 const Logo = () => {
     const theme = useTheme();
+    const companyName = config.companyName;
 
     return (
         /**
@@ -22,7 +24,7 @@ const Logo = () => {
          * <img src={logo} alt="Berry" width="100" />
          *
          */
-        <h2>Padilla&Bujalil</h2>
+        <Typography variant="h2">{companyName}</Typography>
     );
 };
 

@@ -7,7 +7,8 @@ const production = {
     borderRadius: 12,
     environment: 'Producción',
     baseResource: 'https://rentascdmx.com/newapi/RentasAdminBackend',
-    authRedirectUri: 'https://app.rentascdmx.com/'
+    authRedirectUri: 'https://app.rentascdmx.com/',
+    companyName: 'Padilla&Bujalil'
 };
 
 const development = {
@@ -17,7 +18,8 @@ const development = {
     borderRadius: 12,
     environment: 'Desarrollo',
     baseResource: 'http://localhost:10000/RentasAdminBackend',
-    authRedirectUri: 'http://localhost:3000'
+    authRedirectUri: 'http://localhost:3000',
+    companyName: 'FernandoSanchez'
 };
 // to change de env
 const config = process.env.NODE_ENV === 'development' ? development : production;

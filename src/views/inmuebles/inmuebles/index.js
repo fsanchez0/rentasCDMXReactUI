@@ -238,14 +238,14 @@ export default function Inmuebles() {
                                   <Visibility />
                               </IconButton>
                           </Tooltip>
-                          <Tooltip arrow placement="right" title="Eliminar">
-                              <IconButton color="error" onClick={() => handleDeleteRowDialog(row)}>
-                                  <Delete />
-                              </IconButton>
-                          </Tooltip>
                           <Tooltip arrow placement="right" title="Editar">
                               <IconButton color="primary" onClick={() => handleViewEditRowDialog(row,1)}>
                                   <Edit />
+                              </IconButton>
+                          </Tooltip>
+                          <Tooltip arrow placement="right" title="Eliminar">
+                              <IconButton color="error" onClick={() => handleDeleteRowDialog(row)}>
+                                  <Delete />
                               </IconButton>
                           </Tooltip>
                       </Box>

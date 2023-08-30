@@ -406,7 +406,7 @@ export const CreateNewDuenioModal = ({ open, rowData, onClose, onSubmit}) => {
                                     id="regimen-fiscal-select"
                                     name="regimenFiscal"
                                     value={formik.values.regimenFiscal}
-                                    label="Age"
+                                    label="Régimen Fiscal"
                                     onChange={formik.handleChange}
                                 >
                                     <MenuItem value={null}>Sin Régimen Fiscal</MenuItem>

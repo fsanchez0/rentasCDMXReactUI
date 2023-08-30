@@ -12,6 +12,7 @@ const InmueblesDisponibles = Loadable(lazy(() => import('../views/inmuebles/inmu
 
 // catalogos routing
 const Inmuebles     = Loadable(lazy(() => import('../views/inmuebles/inmuebles')));
+const Inquilinos    = Loadable(lazy(() => import('../views/inquilinos')));
 const TiposInmueble = Loadable(lazy(() => import('../views/inmuebles/tipo-de-inmueble')));
 const Asesores      = Loadable(lazy( () => import ('../views/asesores')));
 const Apoderados    = Loadable(lazy( () => import ('../views/apoderados')));
@@ -46,6 +47,10 @@ const MainRoutes = {
                 {
                     path: 'inmuebles',
                     element: <Inmuebles />
+                },
+                {
+                    path: 'inquilinos',
+                    element: <Inquilinos />
                 },
                 {
                     path: 'asesores',
